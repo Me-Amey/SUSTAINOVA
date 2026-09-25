@@ -18,6 +18,77 @@ menuButton?.addEventListener('click', () => {
 });
 $$('.main-nav a').forEach(link => link.addEventListener('click', () => header.classList.remove('menu-open')));
 
+const faqBot = $('.faq-bot');
+const faqPanel = $('.faq-panel');
+const faqClose = $('#faq-close');
+const faqThread = $('#faq-thread');
+const faqInput = $('#faq-input');
+const faqSend = $('#faq-send');
+
+function addFaqMessage(text, who = 'bot') {
+  const bubble = document.createElement('div');
+  bubble.className = `faq-bubble ${who}`;
+  const tag = document.createElement('span');
+  tag.className = 'bubble-tag';
+  tag.textContent = who === 'user' ? 'You' : 'SmartFresh';
+  const message = document.createElement('p');
+  message.textContent = text;
+  bubble.append(tag, message);
+  faqThread?.appendChild(bubble);
+  faqThread?.scrollTo({ top: faqThread.scrollHeight, behavior: 'smooth' });
+}
+
+function getFaqReply(value) {
+  const answers = {
+    freshness: 'Deep purple means fresh. Pink or red usually means the milk may be changing or past its best window.',
+    scan: 'Scan the QR code and point your camera at the indicator in natural light for a clearer reading.',
+    eco: 'The concept is designed around lower-plastic, biodegradable directions to reduce dependence on persistent packaging.',
+    default: 'SmartFresh is a guide for everyday confidence. It should complement cold storage, seals, and your own checks.'
+  };
+
+  const lower = value.toLowerCase();
+  if (lower.includes('fresh') || lower.includes('colour') || lower.includes('purple')) return answers.freshness;
+  if (lower.includes('scan') || lower.includes('qr') || lower.includes('camera')) return answers.scan;
+  if (lower.includes('eco') || lower.includes('plastic') || lower.includes('biodegradable')) return answers.eco;
+  return answers.default;
+}
+
+function handleFaqSubmit(customText) {
+  const value = (customText ?? faqInput?.value ?? '').trim();
+  if (!value) return;
+  addFaqMessage(value, 'user');
+  if (faqInput) faqInput.value = '';
+
+  const reply = getFaqReply(value);
+  window.setTimeout(() => addFaqMessage(reply, 'bot'), 240);
+}
+
+function toggleFaq(forceOpen) {
+  const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : faqPanel.hidden;
+  faqPanel.hidden = !shouldOpen;
+  faqBot?.setAttribute('aria-expanded', String(shouldOpen));
+  faqBot?.classList.toggle('is-open', shouldOpen);
+}
+faqBot?.addEventListener('click', () => toggleFaq(faqPanel.hidden));
+faqClose?.addEventListener('click', () => toggleFaq(false));
+faqSend?.addEventListener('click', () => handleFaqSubmit());
+faqInput?.addEventListener('keydown', event => {
+  if (event.key === 'Enter') handleFaqSubmit();
+});
+$$('.chip').forEach(chip => chip.addEventListener('click', () => {
+  const value = chip.dataset.question || chip.textContent.trim();
+  handleFaqSubmit(value);
+}));
+document.addEventListener('click', event => {
+  if (!faqPanel || faqPanel.hidden) return;
+  const clickedBot = faqBot?.contains(event.target);
+  const clickedPanel = faqPanel.contains(event.target);
+  if (!clickedBot && !clickedPanel) toggleFaq(false);
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && faqPanel && !faqPanel.hidden) toggleFaq(false);
+});
+
 // Gentle 3D product tilt on desktop pointer movement.
 const pack = $('[data-tilt]');
 const stage = $('.hero-stage');
@@ -193,80 +264,3 @@ verifyButton?.addEventListener('click', () => {
   }
 });
 
-// Local FAQ assistant for common SmartFresh questions.
-const faqChat = $('.faq-chat');
-const faqLauncher = $('#faqLauncher');
-const faqPanel = $('#faqPanel');
-const faqClose = $('.faq-close');
-const faqMessages = $('#faqMessages');
-const faqForm = $('#faqForm');
-const faqInput = $('#faqInput');
-const faqSuggestions = $$('.faq-suggestions button');
-const faqAnswers = [
-  {
-    keywords: ['what is smartfresh', 'smartfresh'],
-    answer: 'SmartFresh is a prototype milk pouch that combines a biodegradable packaging direction with a natural colour-changing freshness indicator and a phone-based reading.'
-  },
-  {
-    keywords: ['indicator', 'colour', 'color', 'work'],
-    answer: 'The cabbage-derived anthocyanin indicator shifts from bluish-purple toward pink and red as deterioration progresses. The Freshness Lab compares a sample image with prototype colour categories.'
-  },
-  {
-    keywords: ['safe', 'food', 'consume', 'certification', 'safety'],
-    answer: 'No. This is an information layer, not a food-safety certification. Keep milk chilled, check the seal and expiry, and use your senses before consuming.'
-  },
-  {
-    keywords: ['material', 'biodegradable', 'plastic', 'pva', 'pectin', 'xanthan'],
-    answer: 'The concept explores a film made with PVA, pectin and xanthan as an alternative direction to persistent LDPE packaging.'
-  },
-  {
-    keywords: ['upload', 'image', 'photo', 'scan', 'camera'],
-    answer: 'Open the Freshness Lab, then drop an indicator image into the input area or choose one from your device. For a clearer prototype reading, photograph only the indicator in natural light.'
-  },
-  {
-    keywords: ['passport', 'batch', 'qr', 'verify', 'expiry'],
-    answer: 'The Pouch Passport is a demo record for a sample batch. Enter the batch number and best-before date, then choose Verify this pouch to check the connection.'
-  },
-  {
-    keywords: ['impact', 'sdg', 'waste', 'earth', 'sustainability'],
-    answer: 'SmartFresh connects responsible packaging with responsible consumption: explore lower-persistence materials, reduce guesswork and design for a more thoughtful end of life.'
-  }
-];
-
-function addFaqMessage(text, type) {
-  const message = document.createElement('div');
-  message.className = `faq-message faq-message-${type}`;
-  message.textContent = text;
-  faqMessages.append(message);
-  faqMessages.scrollTop = faqMessages.scrollHeight;
-}
-
-function answerFaq(question) {
-  const normalizedQuestion = question.toLowerCase();
-  const match = faqAnswers.find(item => item.keywords.some(keyword => normalizedQuestion.includes(keyword)));
-  return match?.answer || 'I can help with the indicator, materials, image uploads, pouch passport, prototype readings and food-safety limits. Try one of the suggested questions.';
-}
-
-function submitFaqQuestion(question) {
-  const cleanQuestion = question.trim();
-  if (!cleanQuestion) return;
-  addFaqMessage(cleanQuestion, 'user');
-  faqInput.value = '';
-  window.setTimeout(() => addFaqMessage(answerFaq(cleanQuestion), 'bot'), 180);
-}
-
-function setFaqOpen(isOpen) {
-  faqChat.classList.toggle('is-open', isOpen);
-  faqPanel.setAttribute('aria-hidden', String(!isOpen));
-  faqLauncher.setAttribute('aria-expanded', String(isOpen));
-  if (isOpen) faqInput.focus();
-}
-
-faqLauncher.addEventListener('click', () => setFaqOpen(!faqChat.classList.contains('is-open')));
-faqClose.addEventListener('click', () => setFaqOpen(false));
-faqForm.addEventListener('submit', event => {
-  event.preventDefault();
-  submitFaqQuestion(faqInput.value);
-});
-faqSuggestions.forEach(button => button.addEventListener('click', () => submitFaqQuestion(button.dataset.question)));
-document.addEventListener('keydown', event => { if (event.key === 'Escape') setFaqOpen(false); });
