@@ -130,9 +130,8 @@ if (flowLine && flowSteps.length && window.matchMedia('(min-width: 651px)').matc
 // Prototype colour interpretation.
 const readings = {
   fresh: { title: 'Fresh', color: '#393b94', confidence: '96%', band: 'DEEP PURPLE', next: 'SAFE TO USE', text: 'The indicator is in the deep bluish-purple range. The pack is reading as fresh in this prototype calibration.' },
-  warning: { title: 'Warning', color: '#7e2c82', confidence: '82%', band: 'PINK PURPLE', next: 'CHECK SOON', text: 'The indicator is moving toward pinkish-purple. This is an early deterioration signal — keep chilled and check again soon.' },
-  change: { title: 'Changing', color: '#c74778', confidence: '89%', band: 'BEETROOT PINK', next: 'USE WITH CARE', text: 'The indicator is in the beetroot-pink range. The pack is showing an intermediate deterioration category.' },
-  spoiled: { title: 'Not fresh', color: '#bd272e', confidence: '94%', band: 'DARK RED', next: 'DO NOT CONSUME', text: 'The indicator is in the dark-red range. This prototype reading is classified as high deterioration — do not consume without further checks.' }
+  changing: { title: 'Changing', color: '#c94d7b', confidence: '82%', band: 'PINK / MAGENTA', next: 'CHECK SOON', text: 'The indicator is moving toward pink or magenta. The milk is changing and should be checked soon.' },
+  spoiled: { title: 'Spoiled', color: '#bd272e', confidence: '94%', band: 'DARK RED', next: 'DO NOT CONSUME', text: 'The indicator is in the dark-red range. This means the milk is spoiled or past its usable condition.' }
 };
 const resultDot = $('#resultDot');
 const resultTitle = $('#resultTitle');
@@ -156,6 +155,49 @@ function setReading(key, source = 'sample') {
   if (source === 'sample') samples.forEach(button => button.classList.toggle('active', button.dataset.status === key));
 }
 samples.forEach(sample => sample.addEventListener('click', () => setReading(sample.dataset.status)));
+setReading('fresh');
+
+const indicatorStates = document.querySelectorAll('.point-state');
+const indicatorTitle = document.getElementById('indicator-title');
+const indicatorText = document.getElementById('indicator-text');
+
+const indicatorMessages = {
+  fresh: {
+    title: 'Colour is the first conversation.',
+    text: 'Deep purple is fresh — the milk is within its best quality window, properly cold, and ready to use.'
+  },
+  changing: {
+    title: 'Colour is changing.',
+    text: 'Pink / magenta means the indicator is shifting as the milk starts to age, so it should be checked soon and used with care.'
+  },
+  spoiled: {
+    title: 'Milk is spoiled.',
+    text: 'Red is the clear sign that the milk has deteriorated significantly and should not be consumed.'
+  }
+};
+
+indicatorStates.forEach(button => {
+  button.addEventListener('click', () => {
+    indicatorStates.forEach(item => item.classList.toggle('active', item === button));
+    const state = button.dataset.state;
+    const message = indicatorMessages[state];
+    if (!message) return;
+
+    indicatorTitle.style.opacity = '0';
+    indicatorText.style.opacity = '0';
+    indicatorTitle.style.transform = 'translateY(4px)';
+    indicatorText.style.transform = 'translateY(4px)';
+
+    window.setTimeout(() => {
+      indicatorTitle.textContent = message.title;
+      indicatorText.textContent = message.text;
+      indicatorTitle.style.opacity = '1';
+      indicatorText.style.opacity = '1';
+      indicatorTitle.style.transform = 'translateY(0)';
+      indicatorText.style.transform = 'translateY(0)';
+    }, 120);
+  });
+});
 
 // Allow visitors to sweep across the calibrated colors with a mouse or finger.
 const sampleRow = $('.sample-row');
@@ -231,10 +273,10 @@ function classifyImage(file) {
     for (let i = 0; i < pixels.length; i += 16) { r += pixels[i]; g += pixels[i + 1]; b += pixels[i + 2]; count++; }
     r /= count; g /= count; b /= count;
     // This deliberately simple rule mirrors the prototype's calibration categories.
-    let key = 'warning';
+    let key = 'changing';
     if (b > r * 1.16 && b > g * 1.05) key = 'fresh';
-    else if (r > b * 1.45 && r > g * 1.28) key = 'spoiled';
-    else if (r > b * 1.08) key = 'change';
+    else if (r > g * 1.16 && r > b * 1.08) key = 'spoiled';
+    else key = 'changing';
     setReading(key, 'upload');
     samples.forEach(button => button.classList.remove('active'));
     URL.revokeObjectURL(url);

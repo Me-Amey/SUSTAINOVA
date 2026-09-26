@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#154b38">
   <meta name="description" content="SmartFresh — a biodegradable milk pouch with a natural freshness indicator and a smartphone colour-analysis interface.">
   <title>SmartFresh — Freshness you can see</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260926-1">
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ED7B5X368V"></script>
@@ -26,9 +26,11 @@
       <span class="team-project-label">SMARTFRESH<br><b>PROJECT</b></span>
     </a>
     <nav class="main-nav" aria-label="Main navigation">
+      <a href="#our-story">Our story</a>
       <a href="#story">The idea</a>
       <a href="#lab">Freshness lab</a>
       <a href="#passport">Pouch passport</a>
+      <a href="#sdg12">SDG 12</a>
       <a href="#impact">Our impact</a>
     </nav>
     <div class="header-actions">
@@ -85,15 +87,29 @@
           <div class="feature-num">01 / MATERIAL</div>
           <div class="feature-art art-leaf"><span>✦</span><svg viewBox="0 0 150 150" fill="none"><path d="M121 27C76 28 39 48 30 82c-4 16 3 30 17 39 22-15 43-38 57-71" stroke="currentColor" stroke-width="4"/><path d="M47 113C62 84 81 58 121 27M35 75C21 70 13 60 13 46c22 1 36 9 43 24M50 123c24 10 48 3 65-20-25-11-47-9-65 3" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3>A pouch with a softer footprint.</h3>
-          <p>Our concept explores a biodegradable film based on <strong>PVA + pectin + xanthan</strong> — an alternative direction to persistent LDPE packaging.</p>
+          <p>Our concept explores a biodegradable film based on <strong>PVA + Pectin + Xanthan Gum</strong> — an alternative direction to persistent LDPE packaging.</p>
           <div class="card-foot"><span>biodegradable concept</span><span>↗</span></div>
         </article>
         <article class="feature-card card-indicator reveal delay-2" data-aos="fade-up">
           <div class="feature-num">02 / INDICATOR</div>
-          <div class="colour-stack"><span class="colour c1"></span><span class="colour c2"></span><span class="colour c3"></span><span class="colour c4"></span></div>
-          <div class="colour-labels"><span>fresh</span><span>changing</span><span>spoiled</span></div>
-          <h3>Colour is the first conversation.</h3>
-          <p>A cabbage-derived anthocyanin indicator shifts from deep bluish-purple toward pink and red as deterioration progresses.</p>
+          <div class="indicator-point-row" aria-label="Freshness stages">
+            <button class="point-state active" type="button" data-state="fresh" aria-label="Fresh stage">
+              <span class="point dot-fresh"></span>
+              <small>fresh</small>
+            </button>
+            <button class="point-state" type="button" data-state="changing" aria-label="Changing stage">
+              <span class="point dot-changing"></span>
+              <small>changing</small>
+            </button>
+            <button class="point-state" type="button" data-state="spoiled" aria-label="Spoiled stage">
+              <span class="point dot-spoiled"></span>
+              <small>spoiled</small>
+            </button>
+          </div>
+          <div class="content-wrap">
+            <h3 id="indicator-title">Colour is the first conversation.</h3>
+            <p id="indicator-text">Deep purple is fresh — the milk is within its best quality window, properly cold, and ready to use. Pink / magenta means the indicator is shifting as the milk starts to age, so it should be checked soon and used with care. Red is the clear sign that the milk has deteriorated significantly and should not be consumed.</p>
+          </div>
           <div class="card-foot"><span>natural colour-changing freshness indicator</span><span>↗</span></div>
         </article>
         <article class="feature-card card-digital reveal delay-3" data-aos="fade-up">
@@ -134,7 +150,7 @@
               <div class="drop-label"><span>LIVE IMAGE INPUT</span><b>01</b></div>
             </div>
             <div class="or-line"><span>OR TRY A CALIBRATED SAMPLE</span></div>
-            <div class="sample-row" role="group" aria-label="Calibrated indicator samples"><button class="sample active" data-status="fresh" data-color="#393b94" aria-label="Fresh sample"><span style="background:#393b94"></span><b>Fresh</b><small>bluish-purple</small></button><button class="sample" data-status="warning" data-color="#7e2c82" aria-label="Warning sample"><span style="background:#7e2c82"></span><b>Warning</b><small>pinkish-purple</small></button><button class="sample" data-status="change" data-color="#c74778" aria-label="Change sample"><span style="background:#c74778"></span><b>Changing</b><small>beetroot pink</small></button><button class="sample" data-status="spoiled" data-color="#bd272e" aria-label="Not fresh sample"><span style="background:#bd272e"></span><b>Not fresh</b><small>dark red</small></button></div>
+            <div class="sample-row" role="group" aria-label="Calibrated indicator samples"><button class="sample active" data-status="fresh" data-color="#393b94" aria-label="Fresh sample"><span style="background:#393b94"></span><b>Fresh</b><small>deep purple</small></button><button class="sample" data-status="changing" data-color="#c94d7b" aria-label="Changing sample"><span style="background:#c94d7b"></span><b>Changing</b><small>pink / magenta</small></button><button class="sample" data-status="spoiled" data-color="#bd272e" aria-label="Spoiled sample"><span style="background:#bd272e"></span><b>Spoiled</b><small>dark red</small></button></div>
           </div>
           <div class="result-panel">
             <div class="result-kicker"><span class="panel-kicker">OUTPUT 01 / INTERPRETATION</span><span class="read-time">0.2 SEC</span></div>
@@ -161,6 +177,24 @@
       </div>
     </section>
 
+    <section class="our-story section-pad" id="our-story">
+      <div class="our-story-inner reveal" data-aos="fade-up">
+        <div class="eyebrow"><span class="eyebrow-line"></span> OUR STORY</div>
+        <div class="our-story-grid">
+          <div class="story-copy">
+            <h2>We saw a daily habit that needed more clarity.</h2>
+            <p>Milk is part of everyday life, but consumers still depend on guesswork, dates, and visual checks to understand whether it is still safe and fresh. We wanted to turn that uncertainty into a calm, visible signal.</p>
+            <p>SmartFresh began with a simple idea: make freshness understandable at a glance. By combining a biodegradable pouch, a natural colour-based indicator, and a digital reading layer, we imagined a more thoughtful product experience that helps households act with confidence.</p>
+          </div>
+          <div class="story-quote-card">
+            <span class="story-quote-mark">“</span>
+            <p>We wanted to make responsible consumption feel natural, not complicated.</p>
+            <small>SmartFresh team vision</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="impact section-pad" id="impact">
       <div class="impact-head reveal" data-aos="fade-up"><div class="eyebrow"><span class="eyebrow-line"></span> WHY IT MATTERS</div><h2>Less guesswork.<br><em>Less waste.</em></h2><p>SmartFresh is designed around one joined-up idea: responsible production should continue into responsible consumption.</p></div>
       <div class="impact-grid">
@@ -168,7 +202,31 @@
         <div class="impact-stat reveal delay-1" data-aos="fade-up"><strong>02</strong><span class="impact-icon">⌁</span><h3>Know sooner</h3><p>Give consumers an additional visual and digital cue instead of relying only on a date.</p><b>Consumption</b></div>
         <div class="impact-stat reveal delay-2" data-aos="fade-up"><strong>03</strong><span class="impact-icon">✦</span><h3>Close the loop</h3><p>Design for a more thoughtful end-of-life, with sustainability considered from the start.</p><b>Disposal</b></div>
       </div>
-      <div class="sdg-banner reveal" data-aos="fade-up"><div class="sdg-wheel">12</div><div><span>OUR NORTH STAR</span><h3>SDG 12 — Responsible Consumption and Production</h3></div><p>“We are addressing not only how the packaging is produced, but also what happens to it after use.”</p></div>
+      <div class="sdg-banner reveal" id="sdg12" data-aos="fade-up">
+        <div class="sdg-wheel">12</div>
+        <div class="sdg-title-wrap">
+          <span>WHAT IS SDG?</span>
+          <h3>Sustainable Development Goal 12 — Responsible Consumption and Production</h3>
+        </div>
+        <p>"The Sustainable Development Goals are UN global targets for a sustainable future, with SDG 12 focused on reducing waste, using resources wisely, and minimizing environmental impact across product life cycles."</p>
+      </div>
+      <div class="sdg-details reveal" data-aos="fade-up">
+        <div class="sdg-detail-item">
+          <strong>01</strong>
+          <h4>Why it matters</h4>
+          <p>SDG 12 serves as a vital framework that fundamentally challenges society, corporations, and governing bodies to re-evaluate the entire life cycle of products—from initial manufacturing and daily consumer use to final disposal—to ensure that global consumption patterns shift toward greater responsibility and significantly minimized waste.</p>
+        </div>
+        <div class="sdg-detail-item">
+          <strong>02</strong>
+          <h4>Reduce plastic dependence</h4>
+          <p>This area targets the widespread reliance on harmful materials by actively developing and adopting biodegradable, low-impact packaging solutions—such as those explored by SmartFresh—which successfully challenge persistent plastic use and deliver eco-friendly alternatives that are substantially kinder to the environment.</p>
+        </div>
+        <div class="sdg-detail-item">
+          <strong>03</strong>
+          <h4>Prevent avoidable waste</h4>
+          <p>This section focuses on practical, consumer-facing innovations like colour-based freshness indicators that give real-time feedback on milk quality, empowering users to consume products at the optimal time and effectively eliminating unnecessary food spoilage, poor post-purchase decisions, and everyday household waste.</p>
+        </div>
+      </div>
     </section>
 
     <section class="closing section-pad"><div class="closing-leaf" aria-hidden="true"><svg viewBox="0 0 250 240" fill="none"><path d="M218 23C119 27 48 72 37 143c-5 31 9 55 38 70 45-31 91-80 119-148" stroke="currentColor" stroke-width="7"/><path d="M69 211C96 148 134 94 218 23M48 126C18 116 2 95 3 65c43 2 70 17 86 47M75 222c49 20 98 6 136-41-51-22-96-18-132 7" stroke="currentColor" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="eyebrow"><span class="eyebrow-line"></span> THE NEXT POUCH IS A CONVERSATION</div><h2>Good for you.<br><em>Better for earth.</em></h2><p>SmartFresh brings a little more clarity to the everyday things we trust.</p><a class="button button-dark" href="#top">Back to the top <span>↑</span></a></section>
@@ -221,6 +279,6 @@
   <footer class="site-footer"><div class="footer-brand"><a class="brand" href="#top"><span class="brand-mark"><svg viewBox="0 0 42 42" fill="none"><path d="M31.2 8.2C20.1 10.4 12.1 16.9 11.5 26.1c-.2 3.3 1.3 6.1 4.2 7.7 5.3-4.2 10.4-10.2 13.8-16.8" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/><path d="M12.8 31.6c5.4-7 10.3-12.3 18.3-17.7M10 25.7c-3.1-1.1-5-3.2-5.5-6.4 4.7-.1 8.1 1.6 10 4.9M17.1 34c4.1 1.6 8.1.8 11.6-2.5-3.8-2.5-7.4-2.8-10.8-.8" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="brand-word">SMART<span>FRESH</span></span></a><p>Intelligent milk packaging for a more informed, less wasteful everyday.</p></div><div class="footer-links"><div><span>EXPLORE</span><a href="#story">The idea</a><a href="#lab">Freshness lab</a><a href="#passport">Pouch passport</a></div><div><span>PROJECT</span><a href="#impact">SDG 12</a><a href="#top">SIH 2026</a><a href="#lab">Prototype</a></div></div><div class="footer-end"><span>© 2026 SMARTFRESH</span><span>BUILT WITH CARE IN INDIA</span></div></footer>
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=20260926-1"></script>
 </body>
 </html>
