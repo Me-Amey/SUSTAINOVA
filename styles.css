@@ -3242,3 +3242,13 @@ section[id] {
     transition-duration: .01ms !important;
   }
 }
+
+/* ── SDG logo images in detail cards ── */
+.sdg-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  display: block;
+}
