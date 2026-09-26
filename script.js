@@ -306,3 +306,109 @@ verifyButton?.addEventListener('click', () => {
   }
 });
 
+
+
+// ── HERO FLOAT CARD 1: cycling freshness indicator ─────────────────────────
+(function () {
+  const card      = document.getElementById('heroIndicatorCard');
+  const swatch    = document.getElementById('heroSwatch');
+  const labelEl   = document.getElementById('heroIndicatorLabel');
+  const subEl     = document.getElementById('heroIndicatorSub');
+
+  if (!card || !swatch || !labelEl || !subEl) return;
+
+  const states = [
+    {
+      label:    'Milk is fresh',
+      sub:      'DEEP PURPLE / READY',
+      bg:       'linear-gradient(135deg, #4b2d77, #2c2d88)',
+      shadow:   'rgba(79, 60, 132, .22)',
+    },
+    {
+      label:    'Check soon',
+      sub:      'PINK / CHANGING',
+      bg:       'linear-gradient(135deg, #c94d7b, #e0306a)',
+      shadow:   'rgba(201, 77, 123, .22)',
+    },
+    {
+      label:    'Do not consume',
+      sub:      'DARK RED / SPOILED',
+      bg:       'linear-gradient(135deg, #bd272e, #8b1a1f)',
+      shadow:   'rgba(189, 39, 46, .22)',
+    },
+  ];
+
+  let idx = 0;
+
+  function applyState(state, animate) {
+    if (animate) {
+      card.classList.add('is-transitioning');
+    }
+
+    const apply = () => {
+      swatch.style.background  = state.bg;
+      swatch.style.boxShadow   = `0 0 0 4px ${state.shadow}`;
+      labelEl.textContent      = state.label;
+      subEl.textContent        = state.sub;
+      card.classList.remove('is-transitioning');
+    };
+
+    if (animate) {
+      setTimeout(apply, 300);
+    } else {
+      apply();
+    }
+  }
+
+  // Set initial state immediately
+  applyState(states[0], false);
+
+  setInterval(() => {
+    idx = (idx + 1) % states.length;
+    applyState(states[idx], true);
+  }, 3000);
+})();
+
+
+// ── HERO FLOAT CARD 2: 0 → 90% progress bar ───────────────────────────────
+(function () {
+  const valueEl = document.getElementById('heroEcoValue');
+  const barEl   = document.getElementById('heroEcoBar');
+
+  if (!valueEl || !barEl) return;
+
+  const TARGET    = 90;   // percentage to count up to
+  const DURATION  = 2600; // ms to count from 0 → 90
+  const PAUSE     = 400;  // ms to hold at 90 before resetting
+  const STEP_MS   = 30;   // timer tick interval
+
+  let current  = 0;
+  let counting = true;
+
+  const increment = TARGET / (DURATION / STEP_MS);
+
+  function tick() {
+    if (counting) {
+      current = Math.min(current + increment, TARGET);
+      const display = Math.round(current);
+      valueEl.textContent = `−${display}%`;
+      barEl.style.width   = `${display}%`;
+
+      if (current >= TARGET) {
+        counting = false;
+        // Hold at 90 for PAUSE ms then reset
+        setTimeout(() => {
+          current  = 0;
+          counting = true;
+          valueEl.textContent = '−0%';
+          barEl.style.width   = '0%';
+        }, PAUSE + 3000); // full 3 s pause before next cycle
+      }
+    }
+  }
+
+  // Kick off after a short delay so it doesn't fire before the page settles
+  setTimeout(() => {
+    setInterval(tick, STEP_MS);
+  }, 500);
+})();
