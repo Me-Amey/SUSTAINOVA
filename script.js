@@ -40,7 +40,7 @@ function addFaqMessage(text, who = 'bot') {
 
 function getFaqReply(value) {
   const answers = {
-    freshness: 'Deep purple means fresh. Pink or red usually means the milk may be changing or past its best window.',
+    freshness: 'Deep purple means fresh. Magenta or red usually means the milk may be changing or past its best window.',
     scan: 'Scan the QR code and point your camera at the indicator in natural light for a clearer reading.',
     eco: 'The concept is designed around lower-plastic, biodegradable directions to reduce dependence on persistent packaging.',
     default: 'SmartFresh is a guide for everyday confidence. It should complement cold storage, seals, and your own checks.'
@@ -130,7 +130,7 @@ if (flowLine && flowSteps.length && window.matchMedia('(min-width: 651px)').matc
 // Prototype colour interpretation.
 const readings = {
   fresh: { title: 'Fresh', color: '#393b94', confidence: '96%', band: 'DEEP PURPLE', next: 'SAFE TO USE', text: 'The indicator is in the deep bluish-purple range. The pack is reading as fresh in this prototype calibration.' },
-  changing: { title: 'Changing', color: '#c94d7b', confidence: '82%', band: 'PINK / MAGENTA', next: 'CHECK SOON', text: 'The indicator is moving toward pink or magenta. The milk is changing and should be checked soon.' },
+  changing: { title: 'Changing', color: '#b5179e', confidence: '82%', band: 'MAGENTA', next: 'CHECK SOON', text: 'The indicator is moving toward magenta. The milk is changing and should be checked soon.' },
   spoiled: { title: 'Spoiled', color: '#bd272e', confidence: '94%', band: 'DARK RED', next: 'DO NOT CONSUME', text: 'The indicator is in the dark-red range. This means the milk is spoiled or past its usable condition.' }
 };
 const resultDot = $('#resultDot');
@@ -168,7 +168,7 @@ const indicatorMessages = {
   },
   changing: {
     title: 'Colour is changing.',
-    text: 'Pink / magenta means the indicator is shifting as the milk starts to age, so it should be checked soon and used with care.'
+    text: 'Magenta means the indicator is shifting as the milk starts to age, so it should be checked soon and used with care.'
   },
   spoiled: {
     title: 'Milk is spoiled.',
@@ -326,9 +326,9 @@ verifyButton?.addEventListener('click', () => {
     },
     {
       label:    'Check soon',
-      sub:      'PINK / CHANGING',
-      bg:       'linear-gradient(135deg, #c94d7b, #e0306a)',
-      shadow:   'rgba(201, 77, 123, .22)',
+      sub:      'MAGENTA / CHANGING',
+      bg:       'linear-gradient(135deg, #b5179e, #8b0d79)',
+      shadow:   'rgba(181, 23, 158, .22)',
     },
     {
       label:    'Do not consume',
@@ -411,4 +411,62 @@ verifyButton?.addEventListener('click', () => {
   setTimeout(() => {
     setInterval(tick, STEP_MS);
   }, 500);
+})();
+
+
+// ── ABOUT US stat counters: count up when scrolled into view ───────────────
+(function () {
+  const counters = document.querySelectorAll('.stat-counter');
+  if (!counters.length) return;
+
+  const DURATION = 1800; // ms
+
+  function animateCounter(el) {
+    const target   = parseFloat(el.dataset.target);
+    const suffix   = el.dataset.suffix || '';
+    const start    = performance.now();
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    function step(now) {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / DURATION, 1);
+      const value    = Math.round(easeOut(progress) * target);
+      el.textContent = value + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // Only trigger once when the stats block enters the viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counter = entry.target;
+        animateCounter(counter);
+        observer.unobserve(counter);
+      }
+    });
+  }, { threshold: 0.4 });
+
+  counters.forEach(c => observer.observe(c));
+})();
+
+
+// ── ABOUT US: word-by-word quote animation ─────────────────────────────────
+(function () {
+  const quote = document.querySelector('.story-quote-bare');
+  if (!quote) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        quote.classList.add('is-visible');
+        observer.unobserve(quote);
+      }
+    });
+  }, { threshold: 0.35 });
+
+  observer.observe(quote);
 })();

@@ -282,10 +282,6 @@ section[id] {
   border-color: var(--paper);
 }
 
-  color: var(--paper);
-  transform: translateY(-3px);
-}
-
 .button-light {
   color: var(--ink);
   background: var(--lime);
@@ -1182,7 +1178,7 @@ section[id] {
 }
 
 .dot-fresh   { background: var(--blue);  animation-delay: 0s;   }
-.dot-changing{ background: #c94d7b;      animation-delay: .45s; }
+.dot-changing{ background: #32052b;      animation-delay: .45s; }
 .dot-spoiled { background: #bd272e;      animation-delay: .9s;  }
 
 .point-state small {
@@ -2521,7 +2517,7 @@ section[id] {
 
 .mentors-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
@@ -3251,4 +3247,328 @@ section[id] {
   border-radius: 10px;
   margin-bottom: 16px;
   display: block;
+}
+
+/* ── TEAM MEMBERS card ── */
+.mentor-card--team {
+  grid-column: auto;
+}
+
+.team-table {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.team-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1.1fr;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  transition: background .18s ease;
+}
+
+.team-row:hover {
+  background: rgba(23, 58, 43, .03);
+  padding-left: 4px;
+}
+
+.team-row span {
+  font-size: 12.5px;
+  color: #5a6b62;
+  line-height: 1.4;
+}
+
+.team-row--head span {
+  font: 700 9px var(--mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.team-row--head:hover {
+  background: transparent;
+  padding-left: 0;
+}
+
+/* Responsive: stack to 1 col on tablet */
+@media (max-width: 900px) {
+  .mentors-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Mentor card extras: tags + quote ── */
+
+/* Make all cards stretch to equal height */
+.mentors-grid {
+  align-items: stretch;
+}
+
+.mentor-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.mentor-bio {
+  flex: 1; /* pushes tags + quote to the bottom */
+}
+
+/* Expertise tag pills */
+.mentor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.mentor-tags span {
+  font: 600 10px var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  background: rgba(23, 58, 43, .04);
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.mentor-card:hover .mentor-tags span {
+  background: rgba(23, 58, 43, .08);
+  border-color: rgba(23, 58, 43, .2);
+}
+
+/* Inline quote at the bottom of the card */
+.mentor-quote {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.mentor-quote-mark {
+  font-family: var(--serif);
+  font-size: 36px;
+  line-height: .8;
+  color: rgba(23, 58, 43, .15);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mentor-quote p {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.55;
+  color: #6a7d72;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── ABOUT US: right column extras ── */
+
+.story-visual-row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+/* Animated stat counters */
+.story-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.story-stat {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: background .2s ease;
+}
+
+.story-stat:last-child {
+  border-bottom: none;
+}
+
+.story-stat:hover {
+  background: var(--paper-deep);
+}
+
+.stat-counter {
+  font-family: var(--serif);
+  font-size: 32px;
+  letter-spacing: -.04em;
+  color: var(--ink);
+  line-height: 1;
+  min-width: 90px;
+  flex-shrink: 0;
+  font-weight: 400;
+}
+
+.story-stat span {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* Key facts strip */
+.story-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.story-fact {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  transition: background .2s ease;
+}
+
+.story-fact:last-child {
+  border-bottom: none;
+}
+
+.story-fact:hover {
+  background: var(--paper-deep);
+}
+
+.fact-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(23, 58, 43, .06);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--ink-2);
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.story-fact:hover .fact-icon {
+  background: rgba(23, 58, 43, .12);
+  transform: scale(1.08);
+}
+
+.story-fact b {
+  display: block;
+  font-size: 12.5px;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.story-fact p {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* ── ABOUT US: bare animated quote ── */
+
+.story-quote-bare {
+  padding: 8px 0 20px;
+}
+
+/* Accent line above the quote */
+.story-quote-line {
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--ink-2);
+  margin-bottom: 20px;
+  transform-origin: left;
+  animation: quoteLineGrow .8s cubic-bezier(.22,.68,0,1.2) both;
+  animation-play-state: paused;
+}
+
+.story-quote-bare.is-visible .story-quote-line {
+  animation-play-state: running;
+}
+
+@keyframes quoteLineGrow {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* Quote text — each word fades + slides up individually */
+.story-quote-text {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.8vw, 32px);
+  line-height: 1.25;
+  letter-spacing: -.025em;
+  color: var(--ink);
+  margin: 0 0 18px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.sqt-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+
+/* Stagger each word via nth-child */
+.story-quote-bare.is-visible .sqt-word { opacity: 1; transform: translateY(0); }
+.story-quote-bare.is-visible .sqt-word:nth-child(1)  { transition-delay: .08s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(2)  { transition-delay: .14s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(3)  { transition-delay: .20s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(4)  { transition-delay: .26s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(5)  { transition-delay: .32s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(6)  { transition-delay: .38s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(7)  { transition-delay: .44s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(8)  { transition-delay: .50s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(9)  { transition-delay: .56s;  }
+.story-quote-bare.is-visible .sqt-word:nth-child(10) { transition-delay: .62s;  }
+
+/* Attribution */
+.story-quote-attr {
+  font: 9px var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity .5s ease .75s;
+}
+
+.story-quote-bare.is-visible .story-quote-attr {
+  opacity: 1;
+}
+
+/* Reduced-motion fallback */
+@media (prefers-reduced-motion: reduce) {
+  .sqt-word,
+  .story-quote-attr,
+  .story-quote-line {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
 }
