@@ -470,3 +470,52 @@ verifyButton?.addEventListener('click', () => {
 
   observer.observe(quote);
 })();
+
+
+// ── SOLUTION: pomegranate parallax on scroll ───────────────────────────────
+(function () {
+  const wrap    = document.querySelector('.solution-pom-wrap');
+  const section = document.querySelector('.solution');
+  if (!wrap || !section) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const rect     = section.getBoundingClientRect();
+      const vh       = window.innerHeight;
+      const progress = 1 - (rect.bottom / (vh + rect.height));
+      const clamped  = Math.max(0, Math.min(1, progress));
+      // Move up to 50px upward relative to scroll progress
+      const shift    = clamped * -50;
+      wrap.style.transform = `translateY(calc(-50% + ${shift}px))`;
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+
+// ── PROBLEM: biodegradable image parallax on scroll ────────────────────────
+(function () {
+  const wrap    = document.querySelector('.problem-bg-wrap');
+  const anchor  = document.querySelector('.problem-text-wrap');
+  if (!wrap || !anchor) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const rect     = anchor.getBoundingClientRect();
+      const vh       = window.innerHeight;
+      const progress = 1 - (rect.bottom / (vh + rect.height));
+      const clamped  = Math.max(0, Math.min(1, progress));
+      const shift    = clamped * -40;
+      wrap.style.transform = `translate(-50%, calc(-50% + ${shift}px))`;
+      ticking = false;
+    });
+  }, { passive: true });
+})();

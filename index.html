@@ -117,11 +117,18 @@
     <!-- ── THE PROBLEM ─────────────────────────────────────────────────── -->
     <section class="problem section-pad" id="problem">
 
+      <!-- Decorative biodegradable background image -->
+
       <!-- Section header -->
       <div class="section-intro" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> THE PROBLEM</div>
         <h2>A packaging system<br><em>out of balance.</em></h2>
-        <p>Every day, millions of milk pouches are used and discarded, creating persistent plastic waste. Valuable agricultural by-products, like pomegranate peel, are also underutilized. We built Sustainova to change that.</p>
+        <div class="problem-text-wrap">
+          <div class="problem-bg-wrap" aria-hidden="true">
+            <img class="problem-bg-img" src="biodegradable.png" alt="">
+          </div>
+          <p>Every day, millions of milk pouches are used and discarded, creating persistent plastic waste. Valuable agricultural by-products, like pomegranate peel, are also underutilized. We built Sustainova to change that.</p>
+        </div>
       </div>
 
       <!-- Statistics grid -->
@@ -159,6 +166,11 @@
 
     <!-- ── OUR SOLUTION ────────────────────────────────────────────────── -->
     <section class="solution section-pad" id="solution">
+
+      <!-- Decorative pomegranate background image -->
+      <div class="solution-pom-wrap" aria-hidden="true">
+        <img class="solution-pom" src="pomegranate-sliced.jpeg" alt="">
+      </div>
 
       <!-- Section header -->
       <div class="section-intro" data-aos="fade-up">
@@ -205,7 +217,12 @@
       <div class="section-intro" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> WHY SUSTAINOVA?</div>
         <h2>Bio-based. Intelligent.<br><em>Future-ready.</em></h2>
-        <p>What makes Sustainova a responsible and impactful packaging solution.</p>
+        <div class="why-intro-right">
+          <div class="why-logo-bg-wrap" aria-hidden="true">
+            <img class="why-logo-bg-img" src="sustainova-logo.jpeg" alt="">
+          </div>
+          <p>What makes Sustainova a responsible and impactful packaging solution.</p>
+        </div>
       </div>
 
       <!-- Six feature cards -->
@@ -434,14 +451,57 @@
         <h2>Every pack has<br>a <em>story.</em></h2>
         <p>Scan the pouch QR code to connect its physical identity to a simple record. For this SIH prototype, try the sample batch below.</p>
         <div class="qr-demo">
-          <div class="qr-grid" aria-label="Decorative QR code">
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span><span></span>
+          <div class="qr-scanner" aria-label="Animated QR code scanner">
+            <!-- Corner markers -->
+            <span class="qr-corner qr-tl"></span>
+            <span class="qr-corner qr-tr"></span>
+            <span class="qr-corner qr-bl"></span>
+            <span class="qr-corner qr-br"></span>
+            <!-- QR dot pattern -->
+            <svg class="qr-dots" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+              <!-- top-left finder block -->
+              <rect x="4"  y="4"  width="10" height="10" rx="1.5" fill="currentColor" opacity=".9"/>
+              <rect x="6"  y="6"  width="6"  height="6"  rx=".8"  fill="var(--paper)"/>
+              <rect x="7.5" y="7.5" width="3" height="3" rx=".4" fill="currentColor"/>
+              <!-- top-right finder block -->
+              <rect x="30" y="4"  width="10" height="10" rx="1.5" fill="currentColor" opacity=".9"/>
+              <rect x="32" y="6"  width="6"  height="6"  rx=".8"  fill="var(--paper)"/>
+              <rect x="33.5" y="7.5" width="3" height="3" rx=".4" fill="currentColor"/>
+              <!-- bottom-left finder block -->
+              <rect x="4"  y="30" width="10" height="10" rx="1.5" fill="currentColor" opacity=".9"/>
+              <rect x="6"  y="32" width="6"  height="6"  rx=".8"  fill="var(--paper)"/>
+              <rect x="7.5" y="33.5" width="3" height="3" rx=".4" fill="currentColor"/>
+              <!-- data dots -->
+              <rect x="18" y="4"  width="3" height="3" rx=".5" fill="currentColor" opacity=".8"/>
+              <rect x="23" y="4"  width="3" height="3" rx=".5" fill="currentColor" opacity=".6"/>
+              <rect x="18" y="9"  width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="4"  y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".7"/>
+              <rect x="9"  y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="4"  y="23" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/>
+              <rect x="18" y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="23" y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".7"/>
+              <rect x="28" y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".8"/>
+              <rect x="18" y="23" width="3" height="3" rx=".5" fill="currentColor" opacity=".6"/>
+              <rect x="23" y="23" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="28" y="23" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/>
+              <rect x="18" y="28" width="3" height="3" rx=".5" fill="currentColor" opacity=".8"/>
+              <rect x="30" y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".7"/>
+              <rect x="35" y="18" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="30" y="23" width="3" height="3" rx=".5" fill="currentColor" opacity=".6"/>
+              <rect x="35" y="28" width="3" height="3" rx=".5" fill="currentColor" opacity=".8"/>
+              <rect x="23" y="30" width="3" height="3" rx=".5" fill="currentColor" opacity=".7"/>
+              <rect x="28" y="35" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/>
+              <rect x="23" y="35" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/>
+            </svg>
+            <!-- Scan beam -->
+            <span class="qr-beam"></span>
+            <!-- Glow when "scanned" -->
+            <span class="qr-glow"></span>
           </div>
-          <div><strong>SCAN TO CONNECT</strong><small>smartfresh / pouch passport</small></div>
+          <div>
+            <strong>SCAN TO CONNECT</strong>
+            <small>smartfresh / pouch passport</small>
+          </div>
         </div>
       </div>
 
