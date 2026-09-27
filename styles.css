@@ -2468,45 +2468,62 @@ section[id] {
   gap: 16px;
 }
 
+/* SDG detail cards — horizontal layout matching reference design */
+.sdg-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 22px;
+}
+
 .sdg-detail-item {
-  background: var(--paper-deep);
+  background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 18px;
-  padding: 24px 20px 20px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
   transition: transform .3s ease, box-shadow .3s ease;
 }
 
 .sdg-detail-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: 0 18px 36px rgba(23, 58, 43, .1);
 }
 
-.sdg-num {
-  display: inline-block;
-  font: 700 10px var(--mono);
-  letter-spacing: .12em;
-  padding: 4px 9px;
-  border-radius: 999px;
-  margin-bottom: 16px;
+.sdg-logo {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+  display: block;
 }
 
-.sdg-12 { background: rgba(215, 233, 154, .3); color: #3d6b35; }
-.sdg-13 { background: rgba(66, 153, 122, .15); color: #1d5040; }
-.sdg-17 { background: rgba(57, 59, 148, .12);  color: #252680; }
+.sdg-detail-text {
+  flex: 1;
+  min-width: 0;
+}
 
 .sdg-detail-item h4 {
-  font-size: 18px;
-  letter-spacing: -.03em;
-  margin: 0 0 10px;
-  line-height: 1.2;
+  font-size: 17px;
+  letter-spacing: -.02em;
+  margin: 0 0 8px;
+  line-height: 1.25;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .sdg-detail-item p {
   margin: 0;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.65;
   color: var(--muted);
 }
+
+/* Remove unused sdg-num badge styles */
+.sdg-num { display: none; }
 
 
 /* ── 17. MENTORS ─────────────────────────────────────────────── */
@@ -3121,6 +3138,10 @@ section[id] {
 
 /* Mobile: ≤ 650px */
 @media (max-width: 650px) {
+  .sdg-details {
+    grid-template-columns: 1fr;
+  }
+
   .section-pad {
     padding: 72px clamp(20px, 6vw, 40px);
   }
@@ -3239,15 +3260,7 @@ section[id] {
   }
 }
 
-/* ── SDG logo images in detail cards ── */
-.sdg-logo {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 16px;
-  display: block;
-}
+/* sdg-logo now defined in sdg-details block above */
 
 /* ── TEAM MEMBERS card ── */
 .mentor-card--team {
@@ -3846,6 +3859,8 @@ section[id] {
 .why-intro-right {
   position: relative;
   max-width: 390px;
+  min-height: 120px; /* ensure the absolute image has room */
+  overflow: visible;
 }
 
 .why-intro-right > p {
@@ -3865,7 +3880,7 @@ section[id] {
   left: 50%;
   top: 50%;
   transform: translate(-50%, calc(-50% - 76px));
-  width: clamp(320px, 46vw, 560px);
+  width: clamp(280px, 40vw, 460px);
   pointer-events: none;
   z-index: 0;
   animation: whyLogoEnter 1.8s cubic-bezier(.22,.68,0,1.1) both;
@@ -3887,7 +3902,7 @@ section[id] {
   transform-origin: center center;
 }
 
-/* Radial vignette — melts edges into background */
+/* Radial vignette — fades into the section background */
 .why-logo-bg-wrap::after {
   content: '';
   position: absolute;
