@@ -3914,3 +3914,219 @@ section[id] {
   );
   pointer-events: none;
 }
+
+/* ══════════════════════════════════════════════
+   FRESHNESS LAB — LIVE CAMERA MODE
+   ══════════════════════════════════════════════ */
+
+/* ── Tab switcher ── */
+.lab-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  background: rgba(23, 58, 43, .05);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.lab-tab {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 11px var(--sans);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.lab-tab.active {
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgba(23, 58, 43, .1);
+}
+
+.lab-tab:hover:not(.active) {
+  color: var(--ink);
+  background: rgba(255, 255, 255, .5);
+}
+
+/* ── Camera zone ── */
+.camera-zone {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #1a2820;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#cameraFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 12px;
+}
+
+/* Hidden sampling canvas */
+#cameraCanvas {
+  display: none;
+}
+
+/* ── Targeting box overlay ── */
+.camera-target {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Corner L-brackets */
+.cam-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: #d8e99a;
+  border-style: solid;
+  opacity: .9;
+}
+
+.cam-corner.tl { top: 0;    left: 0;   border-width: 2px 0 0 2px; }
+.cam-corner.tr { top: 0;    right: 0;  border-width: 2px 2px 0 0; }
+.cam-corner.bl { bottom: 0; left: 0;   border-width: 0 0 2px 2px; }
+.cam-corner.br { bottom: 0; right: 0;  border-width: 0 2px 2px 0; }
+
+/* Crosshair lines */
+.cam-crosshair-h,
+.cam-crosshair-v {
+  position: absolute;
+  background: rgba(216, 233, 154, .45);
+  pointer-events: none;
+}
+
+.cam-crosshair-h {
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.cam-crosshair-v {
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+/* Pulse animation on the target box when active */
+@keyframes targetPulse {
+  0%, 100% { opacity: .9; transform: translate(-50%,-50%) scale(1);    }
+  50%       { opacity: .6; transform: translate(-50%,-50%) scale(1.06); }
+}
+
+.camera-zone.is-scanning .camera-target {
+  animation: targetPulse 1.6s ease-in-out infinite;
+}
+
+/* ── Live HSV readout bar ── */
+.camera-readout {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(23, 58, 43, .75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(216, 233, 154, .2);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font: 600 11px var(--mono);
+  letter-spacing: .1em;
+  color: #d8e99a;
+  white-space: nowrap;
+  z-index: 4;
+  transition: opacity .3s ease;
+}
+
+.cam-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d8e99a;
+  flex-shrink: 0;
+  transition: background .4s ease, box-shadow .4s ease;
+}
+
+/* ── Start/Stop button ── */
+.camera-start-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 24px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 999px;
+  font: 700 12px var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  z-index: 5;
+  transition: background .2s ease, transform .2s ease, opacity .2s ease;
+}
+
+.camera-start-btn:hover {
+  background: var(--ink-2);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.camera-start-btn.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Camera hint line ── */
+.camera-hint {
+  font: 9px var(--mono);
+  color: #8c9d96;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: .08em;
+}
+
+.camera-hint span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid #8c9d96;
+  display: inline-block;
+}
+
+/* Mode pill states */
+.mode-pill.is-live {
+  background: rgba(156, 196, 92, .18);
+  border-color: #9bc45c;
+  color: #4a7c20;
+}
+
+.mode-pill.is-live i {
+  background: #9bc45c;
+}

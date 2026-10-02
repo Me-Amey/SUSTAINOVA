@@ -519,3 +519,193 @@ verifyButton?.addEventListener('click', () => {
     });
   }, { passive: true });
 })();
+
+
+// ══════════════════════════════════════════════════════════════════
+// FRESHNESS LAB — LIVE CAMERA MODE
+// Mirrors the HSV logic from imagerecognition.py exactly:
+//   Deep Purple : 120 ≤ H ≤ 155, S > 50,  V ≤ 100  → Fresh
+//   Magenta     : 140 ≤ H ≤ 165, S > 100, V > 100  → Changing
+//   Red         : (0–10 or 170–179), S > 100, V > 50 → Spoiled
+// ══════════════════════════════════════════════════════════════════
+(function () {
+
+  // ── DOM refs ──────────────────────────────────────────────────
+  const tabUpload     = document.getElementById('tabUpload');
+  const tabCamera     = document.getElementById('tabCamera');
+  const panelUpload   = document.getElementById('panelUpload');
+  const panelCamera   = document.getElementById('panelCamera');
+  const cameraZone    = document.getElementById('cameraZone');
+  const cameraFeed    = document.getElementById('cameraFeed');
+  const cameraCanvas  = document.getElementById('cameraCanvas');
+  const cameraReadout = document.getElementById('cameraReadout');
+  const camDot        = document.getElementById('camDot');
+  const camLabel      = document.getElementById('camLabel');
+  const startBtn      = document.getElementById('cameraStartBtn');
+  const modePill      = document.getElementById('modePill');
+
+  if (!tabUpload || !tabCamera) return;
+
+  let stream       = null;
+  let rafId        = null;
+  let isScanning   = false;
+  const BOX_SIZE   = 80; // px — matches Python's 40×40 scaled to typical video
+
+  // ── Tab switching ─────────────────────────────────────────────
+  function switchTab(tab) {
+    const isCamera = tab === 'camera';
+
+    tabUpload.classList.toggle('active', !isCamera);
+    tabCamera.classList.toggle('active',  isCamera);
+    tabUpload.setAttribute('aria-selected', String(!isCamera));
+    tabCamera.setAttribute('aria-selected', String(isCamera));
+
+    panelUpload.hidden =  isCamera;
+    panelCamera.hidden = !isCamera;
+
+    if (!isCamera) stopCamera();
+  }
+
+  tabUpload.addEventListener('click', () => switchTab('upload'));
+  tabCamera.addEventListener('click', () => switchTab('camera'));
+
+  // ── RGB → HSV (OpenCV convention: H 0–179, S 0–255, V 0–255) ─
+  function rgbToHsvOpenCV(r, g, b) {
+    const rn = r / 255, gn = g / 255, bn = b / 255;
+    const max = Math.max(rn, gn, bn);
+    const min = Math.min(rn, gn, bn);
+    const diff = max - min;
+
+    let h = 0, s = 0;
+    const v = max;
+
+    if (diff !== 0) {
+      s = diff / max;
+      if (max === rn)      h = ((gn - bn) / diff) % 6;
+      else if (max === gn) h = (bn - rn) / diff + 2;
+      else                 h = (rn - gn) / diff + 4;
+      h = h * 60;
+      if (h < 0) h += 360;
+    }
+
+    // Scale to OpenCV range: H→0–179, S→0–255, V→0–255
+    return {
+      h: h / 2,          // 0–179
+      s: s * 255,        // 0–255
+      v: v * 255         // 0–255
+    };
+  }
+
+  // ── Classify HSV — exact port of Python recognize_colors() ────
+  function classifyHSV(h, s, v) {
+    // Red (hue wraps around 0 and 180)
+    if (((h >= 0 && h <= 10) || (h >= 170 && h <= 179)) && s > 100 && v > 50) {
+      return { key: 'spoiled', label: 'SPOILED — DARK RED', color: '#bd272e', dotColor: '#bd272e' };
+    }
+    // Magenta (bright purplish-pink, high hue, high brightness)
+    if (h >= 140 && h <= 165 && s > 100 && v > 100) {
+      return { key: 'changing', label: 'CHANGING — MAGENTA', color: '#b5179e', dotColor: '#b5179e' };
+    }
+    // Deep Purple (darker purple, lower brightness)
+    if (h >= 120 && h <= 155 && s > 50 && v <= 100) {
+      return { key: 'fresh', label: 'FRESH — DEEP PURPLE', color: '#393b94', dotColor: '#393b94' };
+    }
+    return { key: null, label: 'READING…', color: '#d8e99a', dotColor: '#d8e99a' };
+  }
+
+  // ── Sample the centre 80×80px box from the video frame ────────
+  function sampleFrame() {
+    if (!isScanning || cameraFeed.readyState < 2) return;
+
+    const vw = cameraFeed.videoWidth;
+    const vh = cameraFeed.videoHeight;
+    if (!vw || !vh) return;
+
+    const ctx = cameraCanvas.getContext('2d', { willReadFrequently: true });
+    cameraCanvas.width  = vw;
+    cameraCanvas.height = vh;
+    ctx.drawImage(cameraFeed, 0, 0, vw, vh);
+
+    const cx = Math.floor(vw / 2);
+    const cy = Math.floor(vh / 2);
+    const half = Math.floor(BOX_SIZE / 2);
+    const pixels = ctx.getImageData(cx - half, cy - half, BOX_SIZE, BOX_SIZE).data;
+
+    // Average R, G, B across all pixels in the box
+    let rSum = 0, gSum = 0, bSum = 0;
+    const count = pixels.length / 4;
+    for (let i = 0; i < pixels.length; i += 4) {
+      rSum += pixels[i];
+      gSum += pixels[i + 1];
+      bSum += pixels[i + 2];
+    }
+    const r = rSum / count;
+    const g = gSum / count;
+    const b = bSum / count;
+
+    const { h, s, v } = rgbToHsvOpenCV(r, g, b);
+    const result = classifyHSV(h, s, v);
+
+    // Update readout bar
+    camDot.style.background  = result.dotColor;
+    camDot.style.boxShadow   = `0 0 0 4px ${result.dotColor}33`;
+    camLabel.textContent      = `${result.label}  ·  H:${h.toFixed(0)} S:${s.toFixed(0)} V:${v.toFixed(0)}`;
+
+    // Push result to the lab result panel if classified
+    if (result.key) setReading(result.key, 'camera');
+
+    rafId = requestAnimationFrame(sampleFrame);
+  }
+
+  // ── Start camera ──────────────────────────────────────────────
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+      cameraFeed.srcObject = stream;
+      await cameraFeed.play();
+
+      isScanning = true;
+      cameraZone.classList.add('is-scanning');
+      startBtn.classList.add('hidden');
+      modePill.classList.add('is-live');
+      modePill.innerHTML = '<i></i> LIVE';
+      camLabel.textContent = 'Align indicator in box…';
+
+      rafId = requestAnimationFrame(sampleFrame);
+
+    } catch (err) {
+      camLabel.textContent = 'Camera access denied.';
+      console.warn('Camera error:', err);
+    }
+  }
+
+  // ── Stop camera ───────────────────────────────────────────────
+  function stopCamera() {
+    isScanning = false;
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    cameraFeed.srcObject = null;
+    cameraZone.classList.remove('is-scanning');
+    startBtn.classList.remove('hidden');
+    startBtn.textContent = 'Start Camera';
+    modePill.classList.remove('is-live');
+    modePill.innerHTML = '<i></i> READY';
+    camLabel.textContent = 'Waiting for camera…';
+    camDot.style.background = '#d8e99a';
+    camDot.style.boxShadow  = '';
+  }
+
+  startBtn.addEventListener('click', () => {
+    if (isScanning) stopCamera();
+    else { startBtn.textContent = 'Starting…'; startCamera(); }
+  });
+
+  // Stop stream when user navigates away
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && isScanning) stopCamera();
+  });
+
+})();

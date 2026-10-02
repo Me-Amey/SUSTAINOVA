@@ -354,34 +354,72 @@
                 <span class="panel-kicker">INPUT 01 / CAMERA</span>
                 <h3>Show us the indicator.</h3>
               </div>
-              <span class="mode-pill"><i></i> READY</span>
+              <span class="mode-pill" id="modePill"><i></i> READY</span>
             </div>
-            <div class="drop-zone" id="dropZone">
-              <input type="file" id="imageInput" accept="image/*">
-              <div id="uploadPrompt" class="uploadPrompt">
-                <div class="scan-decoration" aria-hidden="true">
-                  <span class="scan-line"></span>
-                  <span class="scan-corner tl"></span>
-                  <span class="scan-corner tr"></span>
-                  <span class="scan-corner bl"></span>
-                  <span class="scan-corner br"></span>
-                  <span class="data-chip chip-top">NATURAL PIGMENT</span>
-                  <span class="data-chip chip-bottom">IMAGE → COLOUR</span>
-                  <div class="indicator-stage">
-                    <div class="indicator-orbit"></div>
-                    <div class="indicator-orb"><span>SF</span></div>
+
+            <!-- Tab switcher -->
+            <div class="lab-tabs" role="tablist" aria-label="Input mode">
+              <button class="lab-tab active" id="tabUpload" role="tab" aria-selected="true" aria-controls="panelUpload" type="button">↥ Upload</button>
+              <button class="lab-tab" id="tabCamera" role="tab" aria-selected="false" aria-controls="panelCamera" type="button">⊙ Live Camera</button>
+            </div>
+
+            <!-- Panel: Upload -->
+            <div id="panelUpload" role="tabpanel" aria-labelledby="tabUpload">
+              <div class="drop-zone" id="dropZone">
+                <input type="file" id="imageInput" accept="image/*">
+                <div id="uploadPrompt" class="uploadPrompt">
+                  <div class="scan-decoration" aria-hidden="true">
+                    <span class="scan-line"></span>
+                    <span class="scan-corner tl"></span>
+                    <span class="scan-corner tr"></span>
+                    <span class="scan-corner bl"></span>
+                    <span class="scan-corner br"></span>
+                    <span class="data-chip chip-top">NATURAL PIGMENT</span>
+                    <span class="data-chip chip-bottom">IMAGE → COLOUR</span>
+                    <div class="indicator-stage">
+                      <div class="indicator-orbit"></div>
+                      <div class="indicator-orb"><span>SF</span></div>
+                    </div>
                   </div>
+                  <div class="upload-copy">
+                    <div class="upload-icon">↥</div>
+                    <strong>Drop an image here</strong>
+                    <span>or click to upload from your device</span>
+                    <small>Photograph only the indicator in natural light for a clearer read.</small>
+                  </div>
+                  <div class="capture-hint"><span></span> no image stored · local prototype</div>
                 </div>
-                <div class="upload-copy">
-                  <div class="upload-icon">↥</div>
-                  <strong>Drop an image here</strong>
-                  <span>or click to upload from your device</span>
-                  <small>Photograph only the indicator in natural light for a clearer read.</small>
-                </div>
-                <div class="capture-hint"><span></span> no image stored · local prototype</div>
+                <img id="uploadedPreview" alt="Uploaded freshness indicator preview">
+                <div class="drop-label"><span>LIVE IMAGE INPUT</span><b>01</b></div>
               </div>
-              <img id="uploadedPreview" alt="Uploaded freshness indicator preview">
-              <div class="drop-label"><span>LIVE IMAGE INPUT</span><b>01</b></div>
+            </div>
+
+            <!-- Panel: Live Camera -->
+            <div id="panelCamera" role="tabpanel" aria-labelledby="tabCamera" hidden>
+              <div class="camera-zone" id="cameraZone">
+                <video id="cameraFeed" autoplay playsinline muted aria-label="Live camera feed"></video>
+                <!-- Hidden canvas used for pixel sampling -->
+                <canvas id="cameraCanvas" aria-hidden="true"></canvas>
+                <!-- Targeting box overlay -->
+                <div class="camera-target" aria-hidden="true">
+                  <span class="cam-corner tl"></span>
+                  <span class="cam-corner tr"></span>
+                  <span class="cam-corner bl"></span>
+                  <span class="cam-corner br"></span>
+                  <span class="cam-crosshair-h"></span>
+                  <span class="cam-crosshair-v"></span>
+                </div>
+                <!-- Live HSV readout -->
+                <div class="camera-readout" id="cameraReadout" aria-live="polite">
+                  <span class="cam-dot" id="camDot"></span>
+                  <span id="camLabel">Waiting for camera…</span>
+                </div>
+                <!-- Start/Stop button -->
+                <button class="camera-start-btn" id="cameraStartBtn" type="button">Start Camera</button>
+              </div>
+              <div class="camera-hint">
+                <span></span> Align the indicator inside the targeting box · continuous live read
+              </div>
             </div>
             <div class="or-line"><span>OR TRY A CALIBRATED SAMPLE</span></div>
             <div class="sample-row" role="group" aria-label="Calibrated indicator samples">
