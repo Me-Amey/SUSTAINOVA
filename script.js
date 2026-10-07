@@ -1,13 +1,176 @@
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // AOS handles viewport-based section reveals.
-AOS.init({
-  duration: 850,
-  easing: 'ease-out-cubic',
-  once: true,
-  offset: 70
+if (typeof AOS !== 'undefined') {
+  AOS.init({
+    duration: 850,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 70
+  });
+} else {
+  // CDN unavailable — reveal everything immediately so content is never stuck.
+  $$('[data-aos]').forEach(el => el.classList.add('aos-animate'));
+}
+
+/* ============================================================
+   3D MODE — preference, toggle, tilt engine, depth parallax
+   ============================================================ */
+const THREE_KEY = 'smartfresh-3d';
+
+(function init3dPreference() {
+  let stored = null;
+  try { stored = localStorage.getItem(THREE_KEY); } catch (e) { /* private mode */ }
+  // Default on, but respect a visitor who asked for reduced motion.
+  const off = stored === 'off' || (stored === null && REDUCED_MOTION);
+  document.documentElement.classList.toggle('no-3d', off);
+  document.documentElement.classList.toggle('has-3d', !off);
+})();
+
+const toggle3d = $('#toggle3d');
+
+function syncToggle3d() {
+  const available = typeof window.SmartFresh3D !== 'undefined';
+  const on = available && !document.documentElement.classList.contains('no-3d');
+  toggle3d?.setAttribute('aria-pressed', String(on));
+  toggle3d?.classList.toggle('is-off', !on);
+  const label = $('.t3d-label', toggle3d);
+  if (label) label.textContent = on ? '3D' : '2D';
+  if (toggle3d) {
+    toggle3d.title = available
+      ? (on ? 'Switch back to the flat artwork' : 'Switch on the 3D visuals')
+      : '3D visuals are unavailable in this browser';
+  }
+}
+
+toggle3d?.addEventListener('click', () => {
+  if (typeof window.SmartFresh3D === 'undefined') return;
+  const root = document.documentElement;
+  if (root.classList.contains('no-3d')) {
+    window.SmartFresh3D.enable();
+  } else {
+    window.SmartFresh3D.disable();
+    root.classList.remove('has-3d');
+  }
+  try {
+    localStorage.setItem(THREE_KEY, root.classList.contains('no-3d') ? 'off' : 'on');
+  } catch (e) { /* private mode */ }
+  syncToggle3d();
 });
+
+syncToggle3d();
+
+// Safety net: if the module never boots (no import-map support), the flat
+// artwork must come back rather than leaving an empty stage.
+window.setTimeout(() => {
+  if (typeof window.SmartFresh3D === 'undefined') {
+    document.documentElement.classList.remove('has-3d');
+    syncToggle3d();
+  }
+}, 1200);
+
+/* ── Pointer-driven 3D tilt for [data-tilt3d] elements ───────── */
+(function initTilt() {
+  const cards = $$('[data-tilt3d]');
+  if (!cards.length) return;
+  if (REDUCED_MOTION) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const MAX_TILT = 6; // degrees
+
+  cards.forEach(card => {
+    // Specular sheen that follows the pointer
+    const sheen = document.createElement('span');
+    sheen.className = 't3d-sheen';
+    sheen.setAttribute('aria-hidden', 'true');
+    card.appendChild(sheen);
+
+    card.addEventListener('pointerenter', () => card.classList.add('is-tilting'));
+
+    card.addEventListener('pointermove', event => {
+      const box = card.getBoundingClientRect();
+      const px = (event.clientX - box.left) / box.width;
+      const py = (event.clientY - box.top) / box.height;
+      card.style.setProperty('--t3d-rx', ((0.5 - py) * 2 * MAX_TILT).toFixed(2) + 'deg');
+      card.style.setProperty('--t3d-ry', ((px - 0.5) * 2 * MAX_TILT).toFixed(2) + 'deg');
+      card.style.setProperty('--t3d-mx', (px * 100).toFixed(1) + '%');
+      card.style.setProperty('--t3d-my', (py * 100).toFixed(1) + '%');
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.classList.remove('is-tilting');
+      card.style.setProperty('--t3d-rx', '0deg');
+      card.style.setProperty('--t3d-ry', '0deg');
+    });
+  });
+})();
+
+/* ── Scroll-driven depth parallax for [data-depth] elements ──── */
+(function initDepth() {
+  const items = $$('[data-depth]').map(el => ({
+    el,
+    amount: parseFloat(el.dataset.depth) || 20,
+    top: 0,
+    height: 0
+  }));
+  if (!items.length || REDUCED_MOTION) return;
+
+  // offsetTop is layout-based, so it is immune to the transform we apply.
+  function docTop(el) {
+    let y = 0;
+    let node = el;
+    while (node) { y += node.offsetTop; node = node.offsetParent; }
+    return y;
+  }
+
+  function measure() {
+    items.forEach(item => {
+      item.top = docTop(item.el);
+      item.height = item.el.offsetHeight;
+    });
+  }
+
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const vh = window.innerHeight;
+    const sy = window.scrollY || window.pageYOffset;
+    items.forEach(item => {
+      const top = item.top - sy;
+      if (top + item.height < -240 || top > vh + 240) return;
+      const progress = (top + item.height / 2 - vh / 2) / vh;
+      item.el.style.setProperty('--dp-y', (progress * item.amount).toFixed(1) + 'px');
+    });
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(update);
+  }
+
+  measure();
+  update();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { measure(); update(); });
+  window.addEventListener('load', () => { measure(); update(); });
+  window.setTimeout(() => { measure(); update(); }, 800);
+})();
+
+/* ── Hovering a lifecycle step highlights its 3D orbit node ──── */
+(function initRingLink() {
+  const wrap = $('.circular-steps');
+  const steps = $$('.circular-step');
+  if (!wrap || !steps.length) return;
+  steps.forEach((step, i) => {
+    step.addEventListener('pointerenter', () => window.SmartFresh3D?.setRingActive(i));
+  });
+  wrap.addEventListener('pointerleave', () => window.SmartFresh3D?.setRingActive(-1));
+})();
+
 
 // Compact mobile navigation.
 const header = $('.site-header');
@@ -153,6 +316,8 @@ function setReading(key, source = 'sample') {
   if (bandValue) bandValue.textContent = reading.band;
   if (nextValue) nextValue.textContent = reading.next;
   if (source === 'sample') samples.forEach(button => button.classList.toggle('active', button.dataset.status === key));
+  // Mirror the reading onto the 3D pouch's freshness indicator
+  window.SmartFresh3D?.setIndicator(key);
 }
 samples.forEach(sample => sample.addEventListener('click', () => setReading(sample.dataset.status)));
 setReading('fresh');
@@ -319,18 +484,21 @@ verifyButton?.addEventListener('click', () => {
 
   const states = [
     {
+      key:      'fresh',
       label:    'Milk is fresh',
       sub:      'DEEP PURPLE / READY',
       bg:       'linear-gradient(135deg, #4b2d77, #2c2d88)',
       shadow:   'rgba(79, 60, 132, .22)',
     },
     {
+      key:      'changing',
       label:    'Check soon',
       sub:      'MAGENTA / CHANGING',
       bg:       'linear-gradient(135deg, #b5179e, #8b0d79)',
       shadow:   'rgba(181, 23, 158, .22)',
     },
     {
+      key:      'spoiled',
       label:    'Do not consume',
       sub:      'DARK RED / SPOILED',
       bg:       'linear-gradient(135deg, #bd272e, #8b1a1f)',
@@ -351,6 +519,8 @@ verifyButton?.addEventListener('click', () => {
       labelEl.textContent      = state.label;
       subEl.textContent        = state.sub;
       card.classList.remove('is-transitioning');
+      // Keep the 3D pouch's indicator in sync with the card
+      window.SmartFresh3D?.setIndicator(state.key);
     };
 
     if (animate) {

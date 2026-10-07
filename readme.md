@@ -39,6 +39,42 @@ This website acts as a prototype presentation for that vision, combining product
 - Google Analytics integration for page tracking
 - AOS animation support for scroll-based micro-interactions
 
+## 3D mode
+
+The site ships with an optional WebGL layer that turns the flat artwork into a
+real-time 3D experience. It is progressive enhancement: with JavaScript off, on
+a browser without WebGL, or with the toggle switched off, the original flat
+assets render exactly as before.
+
+**What is 3D**
+
+- **Hero pouch** — a procedurally modelled SmartFresh pouch (extruded film body,
+  crimped top weld, printed label, QR block, bottom seal) rendered with three.js.
+  The freshness indicator disc is emissive and cycles through the same
+  deep-purple → magenta → dark-red calibration as the 2D lab, casting coloured
+  light onto the film. Drag to spin it, move the pointer for parallax.
+- **Circular-economy orbit** — a tilted rotating ring with four glowing beads
+  that traces the loop just outside the lifecycle diagram. Hovering a lifecycle
+  step in the copy column lights up its matching bead and shows its caption.
+- **Card tilt** — every feature, stat, step and SDG card sits in its own
+  perspective space and follows the pointer, with a specular sheen that tracks
+  the cursor. Hover lifts are preserved.
+- **Scroll depth** — section headers drift against the scroll position for a
+  layered parallax feel.
+
+**Controls**
+
+A `3D` toggle in the header switches the whole layer on and off; the choice is
+remembered in `localStorage`. Visitors who ask for reduced motion get the flat
+version by default and can still opt in.
+
+**Files**
+
+- `js/smartfresh-3d.js` — the two three.js scenes and the public bridge
+  (`window.SmartFresh3D`) used by `script.js`
+- `vendor/three/` — the bundled three.js r160 module build, mapped through an
+  import map so nothing is fetched from a CDN at runtime
+
 ## Tech stack
 
 This project is built using a lightweight static web stack:
@@ -66,7 +102,9 @@ The landing page follows a storytelling flow:
 
 - index.html — page layout and content
 - styles.css — all styling, animations, layout, and visual polish
-- script.js — interactive logic, chat assistant, calibration logic, upload simulation, and motion effects
+- script.js — interactive logic, chat assistant, calibration logic, upload simulation, 3D toggle, tilt engine and motion effects
+- js/smartfresh-3d.js — the WebGL 3D layer
+- vendor/three/ — bundled three.js module build
 - sustainova-logo.jpeg — team branding asset
 - smartfresh-prototype.jpg.png — product imagery
 - readme.md — project documentation
@@ -100,7 +138,8 @@ The project has been designed to feel premium and product-ready while staying li
 Key implementation choices include:
 
 - static files for quick hosting and easy portability
-- no dependency on large external libraries beyond AOS and analytics
+- three.js is vendored locally, so the 3D layer needs no CDN at runtime
+- no other dependency on large external libraries beyond AOS and analytics
 - local asset fallback to keep the site functional even if external sources vanish
 - mobile-friendly layout and responsive behaviour
 - chat-like FAQ assistant for better exploration and user engagement

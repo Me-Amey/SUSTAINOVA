@@ -1,13 +1,22 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="has-3d">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#154b38">
   <meta name="description" content="SmartFresh — a biodegradable milk pouch with a natural freshness indicator and a smartphone colour-analysis interface.">
   <title>SmartFresh — Freshness you can see</title>
-  <link rel="stylesheet" href="styles.css?v=20260927">
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <link rel="stylesheet" href="styles.css?v=20261007">
+
+  <!-- Local three.js build, mapped so ES-module imports resolve offline -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./vendor/three/three.module.min.js"
+    }
+  }
+  </script>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ED7B5X368V"></script>
@@ -42,6 +51,10 @@
     </nav>
 
     <div class="header-actions">
+      <button class="toggle-3d" id="toggle3d" type="button" aria-pressed="true" title="Toggle the 3D visuals">
+        <span class="t3d-cube" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="t3d-label">3D</span>
+      </button>
       <a class="youtube-link" href="https://www.youtube.com/@TeamSustainova" target="_blank" rel="noreferrer" aria-label="Watch Sustainova on YouTube">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 7.2a3 3 0 0 0-2.1-2.1C19.4 4.7 12 4.7 12 4.7s-7.4 0-9.4.4A3 3 0 0 0 .5 7.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c2 .4 9.4.4 9.4.4s7.4 0 9.4-.4a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-4.8ZM9.8 15.5v-7l6.4 3.5-6.4 3.5Z"/></svg>
       </a>
@@ -77,6 +90,11 @@
         <div class="orbit orbit-one"></div>
         <div class="orbit orbit-two"></div>
         <div class="sun-disc"></div>
+
+        <!-- Live WebGL pouch (replaces the flat render while 3D is on) -->
+        <div class="hero-3d" id="hero3d" aria-hidden="true"></div>
+        <span class="stage-hint" id="stageHint" aria-hidden="true"><b></b> drag to rotate</span>
+
         <div class="pack-wrap" data-tilt>
           <div class="pack-gloss"></div>
           <img class="pack-image" src="smartfresh-prototype.jpg.png" alt="SmartFresh biodegradable milk pouch with freshness indicator">
@@ -120,7 +138,7 @@
       <!-- Decorative biodegradable background image -->
 
       <!-- Section header -->
-      <div class="section-intro" data-aos="fade-up">
+      <div class="section-intro" data-depth="26" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> THE PROBLEM</div>
         <h2>A packaging system<br><em>out of balance.</em></h2>
         <div class="problem-text-wrap">
@@ -133,22 +151,22 @@
 
       <!-- Statistics grid -->
       <div class="problem-stats">
-        <div class="problem-stat" data-aos="fade-up" data-aos-delay="0">
+        <div class="problem-stat" data-tilt3d data-aos="fade-up" data-aos-delay="0">
           <span class="problem-icon">◫</span>
           <h3>~50 billion</h3>
           <p>plastic milk pouches used annually in India</p>
         </div>
-        <div class="problem-stat" data-aos="fade-up" data-aos-delay="80">
+        <div class="problem-stat" data-tilt3d data-aos="fade-up" data-aos-delay="80">
           <span class="problem-icon">⌫</span>
           <h3>150–200 kt</h3>
           <p>plastic waste from milk pouches generated every year in India</p>
         </div>
-        <div class="problem-stat" data-aos="fade-up" data-aos-delay="160">
+        <div class="problem-stat" data-tilt3d data-aos="fade-up" data-aos-delay="160">
           <span class="problem-icon">◔</span>
           <h3>Decades–centuries</h3>
           <p>time taken for conventional persistent plastic pouches to degrade</p>
         </div>
-        <div class="problem-stat" data-aos="fade-up" data-aos-delay="240">
+        <div class="problem-stat" data-tilt3d data-aos="fade-up" data-aos-delay="240">
           <span class="problem-icon">◌</span>
           <h3>Millions of tonnes</h3>
           <p>of pomegranate peel waste generated annually, with limited utilization</p>
@@ -173,7 +191,7 @@
       </div>
 
       <!-- Section header -->
-      <div class="section-intro" data-aos="fade-up">
+      <div class="section-intro" data-depth="26" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> OUR SOLUTION</div>
         <h2>From waste.<br><em>To material.</em><br>To intelligence.</h2>
         <p>Pomegranate peel, often treated as agro-industrial waste, becomes the starting point for a new generation of intelligent food packaging. Sustainova closes the loop by recovering valuable compounds and transforming them into functional, biodegradable and intelligent milk packaging.</p>
@@ -181,27 +199,27 @@
 
       <!-- Five-step process -->
       <div class="solution-steps">
-        <div class="solution-step" data-aos="fade-up" data-aos-delay="0">
+        <div class="solution-step" data-tilt3d data-aos="fade-up" data-aos-delay="0">
           <div class="solution-step-icon">♻</div>
           <h4>Recover</h4>
           <p>Pomegranate peel collected from fruit-processing streams.</p>
         </div>
-        <div class="solution-step" data-aos="fade-up" data-aos-delay="80">
+        <div class="solution-step" data-tilt3d data-aos="fade-up" data-aos-delay="80">
           <div class="solution-step-icon">◎</div>
           <h4>Extract</h4>
           <p>Ultrasound-assisted extraction recovers pectin &amp; anthocyanins.</p>
         </div>
-        <div class="solution-step" data-aos="fade-up" data-aos-delay="160">
+        <div class="solution-step" data-tilt3d data-aos="fade-up" data-aos-delay="160">
           <div class="solution-step-icon">◈</div>
           <h4>Engineer</h4>
           <p>Bio-based materials developed into a functional packaging film.</p>
         </div>
-        <div class="solution-step" data-aos="fade-up" data-aos-delay="240">
+        <div class="solution-step" data-tilt3d data-aos="fade-up" data-aos-delay="240">
           <div class="solution-step-icon">◉</div>
           <h4>Intelligently Pack</h4>
           <p>Freshness indicator + QR traceability create a smarter milk pouch.</p>
         </div>
-        <div class="solution-step" data-aos="fade-up" data-aos-delay="320">
+        <div class="solution-step" data-tilt3d data-aos="fade-up" data-aos-delay="320">
           <div class="solution-step-icon">✦</div>
           <h4>Responsible End-of-Life</h4>
           <p>Bio-based packaging designed for a more responsible material cycle.</p>
@@ -214,7 +232,7 @@
     <section class="why-sustainova section-pad" id="why-sustainova">
 
       <!-- Section header -->
-      <div class="section-intro" data-aos="fade-up">
+      <div class="section-intro" data-depth="26" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> WHY SUSTAINOVA?</div>
         <h2>Bio-based. Intelligent.<br><em>Future-ready.</em></h2>
         <div class="why-intro-right">
@@ -227,32 +245,32 @@
 
       <!-- Six feature cards -->
       <div class="why-grid">
-        <div class="why-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="0">
           <div class="why-icon">♜</div>
           <h4>Agro-Waste Valorization</h4>
           <p>Utilizes pomegranate peel, an underutilized agro-industrial by-product, to create valuable packaging materials.</p>
         </div>
-        <div class="why-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="60">
           <div class="why-icon">◎</div>
           <h4>Advanced Extraction Technology</h4>
           <p>Ultrasound-assisted extraction recovers pectin and natural anthocyanins for functional, high-value use.</p>
         </div>
-        <div class="why-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="120">
           <div class="why-icon">◫</div>
           <h4>Bio-based Packaging Material</h4>
           <p>Pectin-based film designed for food packaging with suitable strength and barrier performance.</p>
         </div>
-        <div class="why-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="180">
           <div class="why-icon">◑</div>
           <h4>Intelligent Freshness Indication</h4>
           <p>Anthocyanin-based natural colour change indicates milk freshness in real time.</p>
         </div>
-        <div class="why-card" data-aos="fade-up" data-aos-delay="240">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="240">
           <div class="why-icon">▣</div>
           <h4>Digital Traceability</h4>
           <p>QR-enabled system provides product information and freshness details for informed consumption.</p>
         </div>
-        <div class="why-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="why-card" data-tilt3d data-aos="fade-up" data-aos-delay="300">
           <div class="why-icon">♻</div>
           <h4>Designed for Circularity</h4>
           <p>A bio-based alternative to conventional plastic, with biodegradability and reduced dependence on persistent plastic materials.</p>
@@ -265,7 +283,7 @@
     <section class="story section-pad" id="story">
 
       <!-- Section header -->
-      <div class="section-intro" data-aos="fade-up">
+      <div class="section-intro" data-depth="26" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> THE SMARTFRESH DIFFERENCE</div>
         <h2>One pouch.<br><em>Two kinds of care.</em></h2>
         <p>We are rethinking the milk pack from the material it is made of to the information it gives back. SmartFresh connects a physical colour response to a clear digital decision.</p>
@@ -332,7 +350,7 @@
 
       <!-- ── FRESHNESS LAB (merged with Idea section) ──────────────────── -->
       <div class="lab-divider" data-aos="fade-up">
-        <div class="lab-heading" id="lab">
+        <div class="lab-heading" data-depth="24" id="lab">
           <div class="eyebrow light"><span class="eyebrow-line"></span> SMARTFRESH DIGITAL LAYER</div>
           <h2>Turn a colour<br>into <em>confidence.</em></h2>
           <p>This is a working prototype of the image-analysis experience. Pick a calibrated colour or upload an indicator image to see how the interface interprets it.</p>
@@ -484,7 +502,7 @@
     <section class="passport section-pad" id="passport">
 
       <!-- Left: copy + QR demo -->
-      <div class="passport-copy" data-aos="fade-up">
+      <div class="passport-copy" data-depth="20" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> YOUR POUCH PASSPORT</div>
         <h2>Every pack has<br>a <em>story.</em></h2>
         <p>Scan the pouch QR code to connect its physical identity to a simple record. For this SIH prototype, try the sample batch below.</p>
@@ -544,7 +562,7 @@
       </div>
 
       <!-- Right: interactive passport card -->
-      <div class="passport-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="passport-card" data-tilt3d data-aos="fade-up" data-aos-delay="150">
         <div class="passport-top"><span>SMARTFRESH / PASSPORT</span><span class="passport-star">✳</span></div>
         <div class="passport-title">
           <span>DEMO BATCH</span>
@@ -571,7 +589,7 @@
         <div class="our-story-grid">
 
           <!-- Left: paragraphs -->
-          <div class="story-copy">
+          <div class="story-copy" data-depth="22">
             <h2>Redefining Milk Packaging for a Sustainable Future.</h2>
             <p>Sustainova is a materials-driven sustainable packaging innovation focused on rethinking conventional milk packaging through the convergence of circular bioeconomy, functional biopolymers, intelligent sensing, and digital traceability.</p>
             <p>Our platform transforms pomegranate peel &#8212; an underutilized agro-industrial by-product &#8212; into functional packaging resources, recovering pectin and natural anthocyanins through ultrasound-assisted extraction.</p>
@@ -582,7 +600,7 @@
           <div class="story-visual-row">
 
             <!-- Animated quote -->
-            <div class="story-quote-bare" data-aos="fade-up" data-aos-delay="150">
+            <div class="story-quote-bare" data-tilt3d data-aos="fade-up" data-aos-delay="150">
               <span class="story-quote-line"></span>
               <blockquote class="story-quote-text">
                 <span class="sqt-word">"We</span>
@@ -600,7 +618,7 @@
             </div>
 
             <!-- Animated stat counters -->
-            <div class="story-stats" data-aos="fade-up" data-aos-delay="250">
+            <div class="story-stats" data-tilt3d data-aos="fade-up" data-aos-delay="250">
               <div class="story-stat">
                 <strong class="stat-counter" data-target="50" data-suffix="B+">0</strong>
                 <span>milk pouches used annually in India</span>
@@ -616,7 +634,7 @@
             </div>
 
             <!-- Key facts strip -->
-            <div class="story-facts" data-aos="fade-up" data-aos-delay="350">
+            <div class="story-facts" data-tilt3d data-aos="fade-up" data-aos-delay="350">
               <div class="story-fact">
                 <span class="fact-icon">♻</span>
                 <div>
@@ -651,34 +669,35 @@
       <div class="circular-economy-inner">
 
         <!-- Left: copy + steps -->
-        <div class="circular-copy" data-aos="fade-up">
+        <div class="circular-copy" data-depth="22" data-aos="fade-up">
           <div class="eyebrow"><span class="eyebrow-line"></span> THE CIRCULAR ECONOMY PRINCIPLE</div>
           <h2>It's all about<br><em>Circular Economy.</em></h2>
           <p>Sustainova transforms pomegranate peel waste into intelligent, biodegradable milk packaging. By closing the loop, what is discarded today becomes a valuable resource tomorrow.</p>
 
           <!-- Four lifecycle steps -->
           <div class="circular-steps">
-            <div class="circular-step" data-aos="fade-up" data-aos-delay="80">
+            <div class="circular-step" data-tilt3d data-aos="fade-up" data-aos-delay="80">
               <strong>Recover</strong>
               <span>Pomegranate peel waste collected from fruit processing streams</span>
             </div>
-            <div class="circular-step" data-aos="fade-up" data-aos-delay="160">
+            <div class="circular-step" data-tilt3d data-aos="fade-up" data-aos-delay="160">
               <strong>Transform</strong>
               <span>Extracted into pectin and natural anthocyanins using green extraction methods</span>
             </div>
-            <div class="circular-step" data-aos="fade-up" data-aos-delay="240">
+            <div class="circular-step" data-tilt3d data-aos="fade-up" data-aos-delay="240">
               <strong>Recreate</strong>
               <span>Engineered into intelligent, biodegradable milk packaging</span>
             </div>
-            <div class="circular-step" data-aos="fade-up" data-aos-delay="320">
+            <div class="circular-step" data-tilt3d data-aos="fade-up" data-aos-delay="320">
               <strong>Return</strong>
               <span>Designed for responsible end-of-life, completing the circular cycle</span>
             </div>
           </div>
         </div>
 
-        <!-- Right: diagram image -->
+        <!-- Right: diagram image + orbiting 3D ring -->
         <div class="circular-diagram" data-aos="fade-up" data-aos-delay="200" aria-label="Sustainova circular economy diagram">
+          <div class="circular-3d" id="circular3d" aria-hidden="true"></div>
           <img src="Sustainovaflowdaigram.png" alt="Sustainova circular economy diagram — full lifecycle from pomegranate peel waste to biodegradable smart milk pouch and back to nature">
         </div>
 
@@ -689,7 +708,7 @@
     <section class="impact section-pad" id="impact">
 
       <!-- Section header -->
-      <div class="impact-head" data-aos="fade-up">
+      <div class="impact-head" data-depth="30" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> OUR IMPACT</div>
         <h2>Small material.<br><em>A bigger tomorrow.</em></h2>
         <p>Sustainova transforms pomegranate peel waste into intelligent, biodegradable milk packaging &#8212; helping reduce plastic dependence and creating value from what is otherwise discarded.</p>
@@ -702,25 +721,25 @@
           <p>From prototype validation to pilot deployment and scalable adoption &#8212; Sustainova&#8217;s roadmap is built around measurable milestones.</p>
         </div>
         <div class="projection-grid">
-          <div class="projection-item" data-aos="fade-up" data-aos-delay="0">
+          <div class="projection-item" data-tilt3d data-aos="fade-up" data-aos-delay="0">
             <span class="proj-year">2027</span>
             <span class="proj-icon">&#9879;</span>
             <h4>Pilot-ready prototype</h4>
             <p>Food-contact, migration, mechanical, barrier and biodegradation validation.</p>
           </div>
-          <div class="projection-item" data-aos="fade-up" data-aos-delay="80">
+          <div class="projection-item" data-tilt3d data-aos="fade-up" data-aos-delay="80">
             <span class="proj-year">2028</span>
             <span class="proj-icon">&#9724;</span>
             <h4>10 lakh pouches/year</h4>
             <p>Pilot-scale production and dairy-partner trials.</p>
           </div>
-          <div class="projection-item" data-aos="fade-up" data-aos-delay="160">
+          <div class="projection-item" data-tilt3d data-aos="fade-up" data-aos-delay="160">
             <span class="proj-year">2030</span>
             <span class="proj-icon">&#9726;</span>
             <h4>1 crore+ pouches/year</h4>
             <p>Commercial scale-up across dairy processors.</p>
           </div>
-          <div class="projection-item" data-aos="fade-up" data-aos-delay="240">
+          <div class="projection-item" data-tilt3d data-aos="fade-up" data-aos-delay="240">
             <span class="proj-year">91 t/year</span>
             <span class="proj-icon">&#9854;</span>
             <h4>Potential plastic replacement</h4>
@@ -751,28 +770,28 @@
 
       <!-- SDG detail cards -->
       <div class="sdg-details">
-        <div class="sdg-detail-item" data-aos="fade-up" data-aos-delay="0">
+        <div class="sdg-detail-item" data-tilt3d data-aos="fade-up" data-aos-delay="0">
           <img class="sdg-logo" src="9SDG.jpeg" alt="SDG 9">
           <div class="sdg-detail-text">
             <h4>SDG 9 &#8212; Industry, Innovation &amp; Infrastructure</h4>
             <p>Sustainova advances intelligent bio-based packaging through innovation in materials science, extraction technology, and digital traceability infrastructure.</p>
           </div>
         </div>
-        <div class="sdg-detail-item" data-aos="fade-up" data-aos-delay="100">
+        <div class="sdg-detail-item" data-tilt3d data-aos="fade-up" data-aos-delay="100">
           <img class="sdg-logo" src="12SDG.jpeg" alt="SDG 12">
           <div class="sdg-detail-text">
             <h4>SDG 12 &#8212; Responsible Consumption &amp; Production</h4>
             <p>Reduces persistent plastic dependence through bio-based packaging and empowers consumers with real-time freshness information to minimize food waste.</p>
           </div>
         </div>
-        <div class="sdg-detail-item" data-aos="fade-up" data-aos-delay="200">
+        <div class="sdg-detail-item" data-tilt3d data-aos="fade-up" data-aos-delay="200">
           <img class="sdg-logo" src="13SDG.jpeg" alt="SDG 13">
           <div class="sdg-detail-text">
             <h4>SDG 13 &#8212; Climate Action</h4>
             <p>Valorizing agricultural waste and replacing carbon-intensive LDPE with bio-derived materials contributes to reducing greenhouse gas emissions across the packaging lifecycle.</p>
           </div>
         </div>
-        <div class="sdg-detail-item" data-aos="fade-up" data-aos-delay="300">
+        <div class="sdg-detail-item" data-tilt3d data-aos="fade-up" data-aos-delay="300">
           <img class="sdg-logo" src="17SDG.jpeg" alt="SDG 17">
           <div class="sdg-detail-text">
             <h4>SDG 17 &#8212; Partnerships for the Goals</h4>
@@ -787,7 +806,7 @@
     <section class="mentors section-pad" id="mentors">
 
       <!-- Section header -->
-      <div class="section-intro" data-aos="fade-up">
+      <div class="section-intro" data-depth="26" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> MENTORS,ADVISOR & OUR TEAM </div>
         <h2>Guided by<br><em>experience.</em></h2>
         <p>The SmartFresh project is shaped by deep academic expertise in food technology, materials science, and engineering.</p>
@@ -795,7 +814,7 @@
 
       <!-- Mentor cards -->
       <div class="mentors-grid">
-        <div class="mentor-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="mentor-card" data-tilt3d data-aos="fade-up" data-aos-delay="0">
           <div class="mentor-role">PROJECT MENTOR</div>
           <h3>Dr. Anjali A. Bhoite</h3>
           <p class="mentor-dept">School of Food Technology (SOFT)<br>MIT ADT University</p>
@@ -810,7 +829,7 @@
             <p>Sustainable packaging begins with understanding what nature already offers us.</p>
           </div>
         </div>
-        <div class="mentor-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="mentor-card" data-tilt3d data-aos="fade-up" data-aos-delay="120">
           <div class="mentor-role">PROJECT EXPERT</div>
           <h3>Dr. Chidanand Jadar</h3>
           <p class="mentor-dept">School of Engineering (SOE)<br>MIT ADT University</p>
@@ -825,7 +844,7 @@
             <p>Good engineering turns scientific insight into solutions people can actually use.</p>
           </div>
         </div>
-        <div class="mentor-card mentor-card--team" data-aos="fade-up" data-aos-delay="240">
+        <div class="mentor-card mentor-card--team" data-tilt3d data-aos="fade-up" data-aos-delay="240">
           <div class="mentor-role">TEAM MEMBERS</div>
           <h3>Sustainova Team</h3>
           <p class="mentor-dept">MIT ADT University</p>
@@ -873,7 +892,7 @@
 
     <!-- ── CONTACT ─────────────────────────────────────────────────────── -->
     <section class="contact-section section-pad" id="contact">
-      <div class="contact-inner" data-aos="fade-up">
+      <div class="contact-inner" data-depth="24" data-aos="fade-up">
         <div class="eyebrow"><span class="eyebrow-line"></span> CONTACT</div>
         <h2>Let&#8217;s build<br><em>something better.</em></h2>
         <p>Interested in Sustainova? Whether you are a dairy partner, sustainability researcher, investor, or just curious &#8212; we would love to hear from you.</p>
@@ -972,6 +991,9 @@
   </footer>
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="script.js?v=20260927"></script>
+  <script src="script.js?v=20261007"></script>
+
+  <!-- WebGL 3D layer (progressive enhancement) -->
+  <script type="module" src="./js/smartfresh-3d.js?v=20261007"></script>
 </body>
 </html>
